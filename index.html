@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ Simulador de Futebol</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <i class="fa-solid fa-futbol"></i>
+                <h1>Simulador de Futebol</h1>
+            </div>
+            <nav class="nav-links">
+                <button class="nav-btn active" data-tab="play"><i class="fa-solid fa-play"></i> Jogar</button>
+                <button class="nav-btn" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</button>
+                <button class="nav-btn" data-tab="standings"><i class="fa-solid fa-ranking-star"></i> Ranking</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Aba: Jogar -->
+        <section id="tab-play" class="tab-content active">
+            <!-- Seleção de Times -->
+            <div class="match-setup" id="matchSetup">
+                <div class="setup-card">
+                    <h2 class="setup-title">
+                        <i class="fa-solid fa-trophy"></i>
+                        Nova Partida
+                    </h2>
+                    <p class="setup-subtitle">Escolha os times e a duração da simulação</p>
+
+                    <div class="teams-selection">
+                        <!-- Time da Casa -->
+                        <div class="team-picker home-picker">
+                            <div class="team-badge" id="homeBadge">
+                                <img src="" alt="" id="homeBadgeImg">
+                                <span id="homeBadgeName">Escolha o time</span>
+                            </div>
+                            <select id="homeTeamSelect" class="team-select">
+                                <option value="">🏠 Time da Casa</option>
+                            </select>
+                        </div>
+
+                        <!-- VS -->
+                        <div class="versus">
+                            <span class="vs-text">VS</span>
+                        </div>
+
+                        <!-- Time Visitante -->
+                        <div class="team-picker away-picker">
+                            <div class="team-badge" id="awayBadge">
+                                <img src="" alt="" id="awayBadgeImg">
+                                <span id="awayBadgeName">Escolha o time</span>
+                            </div>
+                            <select id="awayTeamSelect" class="team-select">
+                                <option value="">✈️ Time Visitante</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tipo de Simulação -->
+                    <div class="sim-options">
+                        <label class="sim-option">
+                            <input type="radio" name="simType" value="quick" checked>
+                            <span class="sim-option-content">
+                                <i class="fa-solid fa-forward-fast"></i>
+                                <strong>Rápida</strong>
+                                <small>Resultado em 5s</small>
+                            </span>
+                        </label>
+                        <label class="sim-option">
+                            <input type="radio" name="simType" value="medium">
+                            <span class="sim-option-content">
+                                <i class="fa-solid fa-forward"></i>
+                                <strong>Normal</strong>
+                                <small>~20 segundos</small>
+                            </span>
+                        </label>
+                        <label class="sim-option">
+                            <input type="radio" name="simType" value="full">
+                            <span class="sim-option-content">
+                                <i class="fa-solid fa-clock"></i>
+                                <strong>Completa</strong>
+                                <small>~90 segundos</small>
+                            </span>
+                        </label>
+                    </div>
+
+                    <button class="btn-start" id="btnStartMatch" disabled>
+                        <i class="fa-solid fa-whistle"></i>
+                        Iniciar Partida
+                    </button>
+                </div>
+            </div>
+
+            <!-- Simulação ao vivo -->
+            <div class="match-live hidden" id="matchLive">
+                <!-- Placar -->
+                <div class="scoreboard">
+                    <div class="score-team home">
+                        <img src="" alt="" class="score-badge" id="scoreHomeBadge">
+                        <span class="score-name" id="scoreHomeName">---</span>
+                        <span class="score-goals" id="scoreHomeGoals">0</span>
+                    </div>
+                    <div class="score-center">
+                        <div class="score-time" id="scoreTime">00:00</div>
+                        <div class="score-divider">×</div>
+                        <div class="score-status" id="scoreStatus">1º Tempo</div>
+                    </div>
+                    <div class="score-team away">
+                        <span class="score-goals" id="scoreAwayGoals">0</span>
+                        <span class="score-name" id="scoreAwayName">---</span>
+                        <img src="" alt="" class="score-badge" id="scoreAwayBadge">
+                    </div>
+                </div>
+
+                <!-- Campo -->
+                <div class="field-container">
+                    <div class="field">
+                        <div class="field-center-circle"></div>
+                        <div class="field-center-dot"></div>
+                        <div class="field-half-line"></div>
+                        <div class="field-area field-area-top">
+                            <div class="field-area-small"></div>
+                            <div class="field-penalty-dot"></div>
+                        </div>
+                        <div class="field-area field-area-bottom">
+                            <div class="field-area-small"></div>
+                            <div class="field-penalty-dot"></div>
+                        </div>
+
+                        <!-- Marcadores de gols -->
+                        <div class="goal-markers" id="goalMarkers"></div>
+
+                        <!-- Indicador de posse -->
+                        <div class="possession-indicator" id="possessionIndicator">
+                            <div class="possession-bar">
+                                <div class="possession-fill home-fill" id="possessionHomeFill" style="width:50%"></div>
+                                <div class="possession-fill away-fill" id="possessionAwayFill" style="width:50%"></div>
+                            </div>
+                            <div class="possession-labels">
+                                <span id="possessionHomeLabel">50%</span>
+                                <span>Posse de Bola</span>
+                                <span id="possessionAwayLabel">50%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Narração -->
+                <div class="commentary" id="commentary">
+                    <div class="commentary-header">
+                        <i class="fa-solid fa-microphone"></i>
+                        <span>Narração ao Vivo</span>
+                    </div>
+                    <div class="commentary-feed" id="commentaryFeed">
+                        <div class="commentary-placeholder">Aguardando o apito inicial...</div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas -->
+                <div class="match-stats" id="matchStats">
+                    <div class="stat-card">
+                        <i class="fa-solid fa-futbol"></i>
+                        <span class="stat-label">Chutes</span>
+                        <span class="stat-val"><span id="statHomeShots">0</span> - <span id="statAwayShots">0</span></span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-bullseye"></i>
+                        <span class="stat-label">No Gol</span>
+                        <span class="stat-val"><span id="statHomeOnTarget">0</span> - <span id="statAwayOnTarget">0</span></span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-square"></i>
+                        <span class="stat-label">Cartões Amarelos</span>
+                        <span class="stat-val"><span id="statHomeYellows">0</span> - <span id="statAwayYellows">0</span></span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-square-full card-red-stat"></i>
+                        <span class="stat-label">Cartões Vermelhos</span>
+                        <span class="stat-val"><span id="statHomeReds">0</span> - <span id="statAwayReds">0</span></span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-flag"></i>
+                        <span class="stat-label">Faltas</span>
+                        <span class="stat-val"><span id="statHomeFouls">0</span> - <span id="statAwayFouls">0</span></span>
+                    </div>
+                </div>
+
+                <!-- Botão Nova Partida -->
+                <button class="btn-new-match hidden" id="btnNewMatch">
+                    <i class="fa-solid fa-rotate"></i>
+                    Nova Partida
+                </button>
+            </div>
+        </section>
+
+        <!-- Aba: Histórico -->
+        <section id="tab-history" class="tab-content">
+            <div class="history-container">
+                <div class="history-header">
+                    <h2><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Partidas</h2>
+                    <button class="btn-clear-history" id="btnClearHistory">
+                        <i class="fa-solid fa-trash"></i> Limpar Histórico
+                    </button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">
+                        <i class="fa-solid fa-futbol history-empty-icon"></i>
+                        <p>Nenhuma partida simulada ainda.</p>
+                        <p>Vá para a aba <strong>Jogar</strong> para começar!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Aba: Ranking -->
+        <section id="tab-standings" class="tab-content">
+            <div class="standings-container">
+                <h2><i class="fa-solid fa-ranking-star"></i> Ranking dos Times</h2>
+                <p class="standings-subtitle">Força baseada no desempenho internacional</p>
+                <div class="standings-table-wrapper">
+                    <table class="standings-table" id="standingsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Time</th>
+                                <th>Força</th>
+                                <th>País</th>
+                            </tr>
+                        </thead>
+                        <tbody id="standingsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast de Gol -->
+    <div class="goal-overlay hidden" id="goalOverlay">
+        <div class="goal-popup">
+            <div class="goal-icon">⚽</div>
+            <div class="goal-text" id="goalText">GOOOOL!</div>
+            <div class="goal-scorer" id="goalScorer"></div>
+        </div>
+    </div>
+
+    <!-- Partículas de gol -->
+    <div class="confetti-container hidden" id="confettiContainer"></div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>
